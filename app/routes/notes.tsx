@@ -2,6 +2,11 @@ import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+
 import { getNoteListItems } from "~/models/note.server";
 
 export async function loader({ request }: LoaderArgs) {
@@ -31,11 +36,9 @@ export default function NotesPage() {
         <h1 className="text-3xl font-bold">
           <Link to=".">Marx-Engels Digital Cyclopedia</Link>
         </h1>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
       </header>
 
-      <main className="flex h-full bg-white">
+      <main className="flex flex-row h-full bg-white">
         <div className="h-full w-80 border-r bg-gray-50">
           {dbs.length === 0 ? (
             <p className="p-4">No DBs yet</p>
@@ -57,7 +60,7 @@ export default function NotesPage() {
           )}
         </div>
 
-        <div className="flex-1 p-6">
+        <div className="p-6 w-full h-[calc(100%_-_42px)] overflow-y-scroll">
           <Outlet />
         </div>
       </main>

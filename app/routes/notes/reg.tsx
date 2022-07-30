@@ -1,5 +1,9 @@
+import { Form, Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
+
 export default function RegPage() {
     return (
-        <div className="font-bold">Marx-Engels Digital Register</div>
+        <div>
+            <Outlet />
+        </div>
     );
 }
