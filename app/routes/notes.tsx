@@ -7,6 +7,7 @@ import MuiDrawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -59,9 +60,9 @@ const closedMixin = (theme: Theme): CSSObject => ({
     duration: theme.transitions.duration.leavingScreen,
   }),
   overflowX: 'hidden',
-  width: `calc(${theme.spacing(7)} + 1px)`,
+  width: 0,
   [theme.breakpoints.up('sm')]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
+    width: 0,
   },
 });
 
@@ -153,35 +154,26 @@ export default function NotesPage() {
         sx={{
           width: drawerWidth,
           flexShrink: 0,
-          [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
         }}
         open={open}
+        className={open ? "opacity-100" : "opacity-0"}
       >
         <Toolbar />
         <Box sx={{ overflow: 'auto' }}>
-          <List>
+          <ol>
           {dbs.map((db, index) => (
-            <ListItem key={db.route} disablePadding sx={{ display: 'block' }}>
-              <NavLink
-                className={({ isActive }) =>
-                  `block border-b p-4 text-xl ${isActive ? "bg-white" : ""} ${open ? "justify-self-auto" : "justify-self-center"}`
-                }
-                to={db.route}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {db.icon}
-                </ListItemIcon>
-                <ListItemText primary={db.name} sx={{ opacity: open ? 1 : 0 }} />
-              </NavLink>
-            </ListItem>
+            <li>
+            <NavLink
+            className={({ isActive }) =>
+              `block border-b p-4 text-xl ${isActive ? "bg-white" : ""} ${open ? "justify-items-auto" : "justify-items-center"}`
+            }
+            to={db.route}
+            > 
+                  {db.icon}{" "}{open ? db.name : ""}
+            </NavLink>
+          </li>
           ))}
-          </List>
+          </ol>
         </Box>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
