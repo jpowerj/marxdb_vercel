@@ -25,10 +25,10 @@ import LastPageIcon from '@mui/icons-material/LastPage';
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
-import { getDocInfoListItems } from "~/models/docInfo.server";
+import { getDocinfoListItems } from "~/models/docinfo.server";
 export async function loader({ request }: LoaderArgs) {
-  const docInfoListItems = await getDocInfoListItems();
-  return json({ docInfoListItems });
+  const docinfoListItems = await getDocinfoListItems();
+  return json({ docinfoListItems });
 }
 
 
@@ -247,8 +247,8 @@ export default function CollapsibleTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.docInfoListItems.map((docInfo) => (
-            <Row key={docInfo.id} data={createData(docInfo.id, docInfo.title)} />
+          {data.docinfoListItems.map((docinfo) => (
+            <Row key={docinfo.id} data={createData(docinfo.id, docinfo.title)} />
           ))}
         </TableBody>
         <TableFooter>

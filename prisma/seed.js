@@ -11,7 +11,7 @@ async function seed() {
       title: "Das Kapital"
     }
   };
-  await prisma.docInfo.create(firstDocInfo);
+  await prisma.docinfo.create(firstDocInfo);
 
   const secondDocInfo = {
     data: {
@@ -45,7 +45,7 @@ async function seed() {
       id: regRecordKey,
       title: regRecord.title,
     };
-    await prisma.docInfo.upsert({
+    await prisma.docinfo.upsert({
       where: {id: baseData.id },
       update: baseData,
       create: baseData,

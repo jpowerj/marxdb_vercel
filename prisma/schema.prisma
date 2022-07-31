@@ -16,7 +16,7 @@ model Note {
   updatedAt DateTime @updatedAt
 }
 
-model DocInfo {
+model Docinfo {
   id String @id @default(cuid())
   title String
 

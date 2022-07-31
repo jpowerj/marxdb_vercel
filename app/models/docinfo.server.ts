@@ -1,20 +1,20 @@
-import type { DocInfo } from "@prisma/client";
+import type { Docinfo } from "@prisma/client";
 
 import { prisma } from "~/db.server";
 
-export type { DocInfo } from "@prisma/client";
+export type { Docinfo } from "@prisma/client";
 
-export function getDocInfo({
+export function getDocinfo({
   id,
-}: Pick<DocInfo, "id">) {
-  return prisma.docInfo.findFirst({
+}: Pick<Docinfo, "id">) {
+  return prisma.docinfo.findFirst({
     where: { id: id },
     select: { id: true, title: true },
   });
 }
 
-export function getDocInfoListItems() {
-  return prisma.docInfo.findMany({
+export function getDocinfoListItems() {
+  return prisma.docinfo.findMany({
     select: { id: true, title: true },
     orderBy: { updatedAt: "desc" },
   });

@@ -20,11 +20,11 @@ import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 
-import { getDocInfoListItems } from "~/models/docInfo.server";
+import { getDocinfoListItems } from "~/models/docinfo.server";
 
 export async function loader({ request }: LoaderArgs) {
-  const docInfoListItems = await getDocInfoListItems();
-  return json({ docInfoListItems });
+  const docinfoListItems = await getDocinfoListItems();
+  return json({ docinfoListItems });
 }
 
 interface TabPanelProps {
@@ -177,16 +177,16 @@ export default function DocInfoPage() {
     <Toolbar />
         <Box sx={{ overflow: 'auto', overflowX: 'hidden' }}>
           <ol>
-          {data.docInfoListItems.map((docInfo) => (
-                <li key={docInfo.id}>
+          {data.docinfoListItems.map((docinfo) => (
+                <li key={docinfo.id}>
                   <NavLink
                     className={({ isActive }) =>
                       `block border-b p-4 text-base ${isActive ? "bg-white" : ""}`
                     }
-                    to={docInfo.id}
+                    to={docinfo.id}
                     // onClick={handleDrawerClose}
                   >
-                    📝 {docInfo.title}
+                    📝 {docinfo.title}
                   </NavLink>
                 </li>
               ))}

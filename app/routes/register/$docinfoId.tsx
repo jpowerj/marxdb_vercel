@@ -3,25 +3,25 @@ import { json, redirect } from "@remix-run/node";
 import { Form, useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
-import { getDocInfo } from "~/models/docInfo.server";
+import { getDocinfo } from "~/models/docinfo.server";
 
 export async function loader({ request, params }: LoaderArgs) {
-  invariant(params.docInfoId, "docInfoId not found");
+  invariant(params.docinfoId, "docinfoId not found");
   console.log("loader()");
   console.log(params);
-  const docInfo = await getDocInfo({ id: params.docInfoId });
-  if (!docInfo) {
+  const docinfo = await getDocinfo({ id: params.docinfoId });
+  if (!docinfo) {
     throw new Response("Not Found", { status: 404 });
   }
-  return json({ docInfo });
+  return json({ docinfo });
 }
 
-export default function DocInfoDetailsPage() {
+export default function DocinfoDetailsPage() {
   const data = useLoaderData<typeof loader>();
 
   return (
     <div>
-      <h3 className="text-2xl font-bold">{data.docInfo.title}</h3>
+      <h3 className="text-2xl font-bold">{data.docinfo.title}</h3>
       <p>Document fulltext</p>
       <hr className="my-4" />
     </div>
