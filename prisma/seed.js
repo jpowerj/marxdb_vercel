@@ -5,22 +5,6 @@ var fs = require('fs');
 const prisma = new PrismaClient();
 
 async function seed() {
-  const firstNote = {
-    data: {
-      title: "My first note",
-      body: "Hello, world!"
-    },
-  };
-  await prisma.note.create(firstNote);
-
-  const secondNote = {
-    data: {
-      title: "Second note",
-      body: "Hello again",
-    }
-  };
-  await prisma.note.create(secondNote);
-
   /*
   const firstDocInfo = {
     data: {
