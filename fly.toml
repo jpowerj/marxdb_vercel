@@ -1,4 +1,4 @@
-app = "blog-tutorial-497e"
+app = "marxdb"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = [ ]
