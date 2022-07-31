@@ -1,3 +1,4 @@
+export {};
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcryptjs");
 var fs = require('fs');
@@ -21,12 +22,12 @@ async function seed() {
   await prisma.docInfo.create(secondDocInfo);
   */
 
-  fs.readdir(__dirname, (err, files) => {
+  fs.readdir(__dirname, (err: any, files: any) => {
     if (err)
       console.log(err);
     else {
       console.log("\nCurrent directory filenames:");
-      files.forEach(file => {
+      files.forEach((file: any) => {
         console.log(file);
       })
     }
