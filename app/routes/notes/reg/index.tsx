@@ -21,10 +21,15 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
+
+import type { LoaderArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { Form, Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
+import { getDocInfoListItems } from "~/models/docInfo.server";
+export async function loader({ request }: LoaderArgs) {
+  const docInfoListItems = await getDocInfoListItems();
+  return json({ docInfoListItems });
+}
 
 
 interface TablePaginationActionsProps {
@@ -96,20 +101,12 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
 
 
 function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
-  price: number,
+  id: string,
+  title: string
 ) {
   return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-    price,
+    id,
+    title,
     history: [
       {
         date: '2020-01-05',
@@ -126,8 +123,8 @@ function createData(
 }
 
 
-function Row(props: { row: ReturnType<typeof createData> }) {
-  const { row } = props;
+function Row(props: { data: ReturnType<typeof createData> }) {
+  const { data } = props;
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -142,20 +139,19 @@ function Row(props: { row: ReturnType<typeof createData> }) {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component="th" scope="row">
-          {row.name}
+        <TableCell component="th" scope="row" sx={{maxWidth: 100, overflowX: 'clip' }}>
+          {data.id}
         </TableCell>
-        <TableCell align="right">{row.calories}</TableCell>
-        <TableCell align="right">{row.fat}</TableCell>
-        <TableCell align="right">{row.carbs}</TableCell>
-        <TableCell align="right">{row.protein}</TableCell>
+        <TableCell>
+          {data.title}
+        </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Typography variant="h6" gutterBottom component="div">
-                History
+                Text Info
               </Typography>
               <Table size="small" aria-label="purchases">
                 <TableHead>
@@ -163,20 +159,16 @@ function Row(props: { row: ReturnType<typeof createData> }) {
                     <TableCell>Date</TableCell>
                     <TableCell>Customer</TableCell>
                     <TableCell align="right">Amount</TableCell>
-                    <TableCell align="right">Total price ($)</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.history.map((historyRow) => (
+                  {data.history.map((historyRow) => (
                     <TableRow key={historyRow.date}>
                       <TableCell component="th" scope="row">
                         {historyRow.date}
                       </TableCell>
                       <TableCell>{historyRow.customerId}</TableCell>
                       <TableCell align="right">{historyRow.amount}</TableCell>
-                      <TableCell align="right">
-                        {Math.round(historyRow.amount * row.price * 100) / 100}
-                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -190,20 +182,14 @@ function Row(props: { row: ReturnType<typeof createData> }) {
 }
 
 const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.99),
-  createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
-  createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
-  createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
-  createData('Frozen yoghurt2', 159, 6.0, 24, 4.0, 3.99),
-  createData('Ice cream sandwich2', 237, 9.0, 37, 4.3, 4.99),
-  createData('Eclair2', 262, 16.0, 24, 6.0, 3.79),
-  createData('Cupcake2', 305, 3.7, 67, 4.3, 2.5),
-  createData('Gingerbread2', 356, 16.0, 49, 3.9, 1.5),
+  createData('Frozen yoghurt', "159"),
+  createData('Ice cream sandwich', "237"),
+  createData('Eclair', "262"),
+  createData('Cupcake', "305"),
+  createData('Gingerbread', "356")
 ];
 
 const EnhancedTableToolbar = () => {
-
   return (
     <Toolbar
       sx={{
@@ -224,6 +210,7 @@ const EnhancedTableToolbar = () => {
 };
 
 export default function CollapsibleTable() {
+  const data = useLoaderData<typeof loader>();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -249,20 +236,19 @@ export default function CollapsibleTable() {
       <Table 
         aria-labelledby="tableTitle"
         sx={{ minWidth: 750 }}
+        size="small"
+        style={{tableLayout: 'auto'}}
       >
         <TableHead>
           <TableRow>
             <TableCell />
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
+            <TableCell sx={{ maxWidth: 100}}>ID</TableCell>
+            <TableCell>Title</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <Row key={row.name} row={row} />
+          {data.docInfoListItems.map((docInfo) => (
+            <Row key={docInfo.id} data={createData(docInfo.id, docInfo.title)} />
           ))}
         </TableBody>
         <TableFooter>

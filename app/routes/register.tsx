@@ -3,7 +3,6 @@ import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
-import GitHubIcon from '@mui/icons-material/GitHub';
 import MuiDrawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
@@ -12,6 +11,8 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import MenuIcon from '@mui/icons-material/Menu';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
@@ -19,25 +20,38 @@ import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 
-import { getNoteListItems } from "~/models/note.server";
+import { getDocInfoListItems } from "~/models/docInfo.server";
 
 export async function loader({ request }: LoaderArgs) {
-  const noteListItems = await getNoteListItems();
-  return json({ noteListItems });
+  const docInfoListItems = await getDocInfoListItems();
+  return json({ docInfoListItems });
 }
 
-const dbs = [
-  {
-    name: "Register",
-    route: "reg",
-    icon: "📕",
-  },
-  {
-    name: "Chronicle",
-    route: "chron",
-    icon: "📅",
-  },
-];
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
 
 const drawerWidth = 180;
 
@@ -101,26 +115,6 @@ const AppBar = styled(MuiAppBar)<AppBarProps>(({ theme, open }) => ({
   backgroundColor: 'rgb(7 89 133);'
 }));
 
-/*
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
-})<AppBarProps>(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(['width', 'margin'], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
-*/
-
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
     width: drawerWidth,
@@ -155,17 +149,20 @@ const OverlayDrawer = styled(MuiDrawer)(
   }),
 );
 
-export default function NotesPage() {
+function a11yProps(index: number) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
+
+export default function DocInfoPage() {
   const data = useLoaderData<typeof loader>();
   const theme = useTheme();
-  theme.typography.h3 = {
-    fontSize: '1.2rem',
-    '@media (min-width:600px)': {
-      fontSize: '1.5rem',
-    },
-    [theme.breakpoints.up('md')]: {
-      fontSize: '2.4rem',
-    },
+  const [activeTab, setActiveTab] = React.useState(0);
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setActiveTab(newValue);
   };
   const [open, setOpen] = React.useState(true);
   const handleDrawerClick = () => {
@@ -180,18 +177,19 @@ export default function NotesPage() {
     <Toolbar />
         <Box sx={{ overflow: 'auto', overflowX: 'hidden' }}>
           <ol>
-          {dbs.map((db, index) => (
-            <li>
-            <NavLink
-            className={({ isActive }) =>
-              `block border-b p-4 text-xl ${isActive ? "bg-white" : ""}`
-            }
-            to={db.route}
-            > 
-                  {db.icon}{" "}{open ? db.name : ""}
-            </NavLink>
-          </li>
-          ))}
+          {data.docInfoListItems.map((docInfo) => (
+                <li key={docInfo.id}>
+                  <NavLink
+                    className={({ isActive }) =>
+                      `block border-b p-4 text-base ${isActive ? "bg-white" : ""}`
+                    }
+                    to={docInfo.id}
+                    // onClick={handleDrawerClose}
+                  >
+                    📝 {docInfo.title}
+                  </NavLink>
+                </li>
+              ))}
           </ol>
         </Box>
         </div>
@@ -221,18 +219,9 @@ export default function NotesPage() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h4" noWrap component="div" sx={{flex:1}}>
+          <Typography variant="h4" noWrap component="div">
               Marx-Engels Digital Cyclopedia
           </Typography>
-          <a href="https://github.com/jpowerj/digital-marxism/" target='_blank'>
-          <IconButton
-            component="div"
-            color="inherit"
-            edge="end"
-          >
-            <GitHubIcon sx={{ fontSize: '2.2rem' }} />
-          </IconButton>
-          </a>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -240,18 +229,10 @@ export default function NotesPage() {
         sx={{
           display: { xs: 'none', sm: 'block' },
           width: drawerWidth,
-          height: '100%',
-          //flexShrink: 0,
+          flexShrink: 0,
           overflowX: 'hidden',
-          overflowY: 'scroll',
-          '& .MuiDrawer-paper': { 
-            boxSizing: 'border-box',
-            //flexShrink: 0,
-            overflowX: 'hidden',
-            overflowY: 'scroll',
-          },
+          '& .MuiDrawer-paper': { boxSizing: 'border-box', flexShrink: 0, overflowX: 'hidden' },
         }}
-        disableScrollLock={true}
         open={open}
       >
         {drawer}
@@ -268,21 +249,34 @@ export default function NotesPage() {
             display: { xs: 'block', sm: 'none' },
             width: drawerWidth,
             overflowX: 'hidden',
-            overflowY: 'scroll',
-            '& .MuiDrawer-paper': { overflowX: 'hidden', overflowY: 'scroll', width: drawerWidth, boxSizing: 'border-box' },
+            '& .MuiDrawer-paper': { overflowX: 'hidden', width: drawerWidth, boxSizing: 'border-box' },
           }}
-          disableScrollLock={true}
           anchor="left"
         >
           {drawer}
       </MuiDrawer>
       <Box
         component="main"
-        sx={{ flexGrow: 1, p: 3, overflow: 'hidden', overflowY: 'scroll' }}
-        className="w-full h-full"
+        sx={{ flexGrow: 1, p: 3 }}
+        className="w-full"
       >
         <Toolbar />
-        <Outlet />
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Tabs value={activeTab} onChange={handleChange} aria-label="basic tabs example">
+            <Tab label="Item One" {...a11yProps(0)} />
+            <Tab label="Item Two" {...a11yProps(1)} />
+            <Tab label="Item Three" {...a11yProps(2)} />
+          </Tabs>
+        </Box>
+        <TabPanel value={activeTab} index={0}>
+          <Outlet />
+        </TabPanel>
+        <TabPanel value={activeTab} index={1}>
+          Item Two
+        </TabPanel>
+        <TabPanel value={activeTab} index={2}>
+          Item Three
+        </TabPanel>
       </Box>
     </Box>
   );

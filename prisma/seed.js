@@ -1,5 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcryptjs");
+var fs = require('fs');
 
 const prisma = new PrismaClient();
 
@@ -17,8 +18,55 @@ async function seed() {
       title: "Second note",
       body: "Hello again",
     }
-  }
+  };
   await prisma.note.create(secondNote);
+
+  /*
+  const firstDocInfo = {
+    data: {
+      title: "Das Kapital"
+    }
+  };
+  await prisma.docInfo.create(firstDocInfo);
+
+  const secondDocInfo = {
+    data: {
+      title: "Communist Manifesto"
+    }
+  };
+  await prisma.docInfo.create(secondDocInfo);
+  */
+
+  fs.readdir(__dirname, (err, files) => {
+    if (err)
+      console.log(err);
+    else {
+      console.log("\nCurrent directory filenames:");
+      files.forEach(file => {
+        console.log(file);
+      })
+    }
+  })
+
+  var fPath = __dirname + "/marx-db-reg-sample.json";
+
+  var regData = JSON.parse(fs.readFileSync(fPath, 'utf8'));
+  var regRecords = regData.entries;
+
+  for (const regRecordKey of Object.keys(regRecords)) {
+    var regRecord = regRecords[regRecordKey];
+    console.log(regRecord);
+    // Get just the id and title
+    baseData = {
+      id: regRecordKey,
+      title: regRecord.title,
+    };
+    await prisma.docInfo.upsert({
+      where: {id: baseData.id },
+      update: baseData,
+      create: baseData,
+    });
+  }
 
   const posts = [
     {

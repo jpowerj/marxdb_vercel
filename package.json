@@ -31,9 +31,11 @@
   "dependencies": {
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
-    "@fontsource/roboto": "^4.5.7",
+    "@material-ui/core": "^4.12.4",
     "@mui/icons-material": "^5.8.4",
+    "@mui/lab": "^5.0.0-alpha.92",
     "@mui/material": "^5.9.2",
+    "@mui/styles": "^5.9.2",
     "@prisma/client": "^4.0.0",
     "@remix-run/node": "^1.6.6",
     "@remix-run/react": "^1.6.6",
@@ -42,8 +44,10 @@
     "bcryptjs": "^2.4.3",
     "isbot": "^3.5.0",
     "marked": "^4.0.18",
+    "material-table": "^2.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-virtualized": "^9.22.3",
     "tiny-invariant": "^1.2.0"
   },
   "devDependencies": {

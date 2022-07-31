@@ -8,17 +8,18 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
+import { ThemeProvider, createTheme, responsiveFontSizes } from '@mui/material/styles';
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getUser } from "./session.server";
 
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
+const robotoUrl = "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap";
 
 export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
+  return [
+    { rel: "stylesheet", href: tailwindStylesheetUrl },
+    { rel: "stylesheet", href: robotoUrl }
+  ];
 };
 
 export const meta: MetaFunction = () => ({
@@ -33,6 +34,29 @@ export async function loader({ request }: LoaderArgs) {
   });
 }
 
+const themeOptions = {
+  palette: {
+    type: 'light',
+    primary: {
+      main: '#3f51b5',
+    },
+    secondary: {
+      main: '#f50057',
+    },
+  },
+};
+
+const theme = responsiveFontSizes(createTheme(themeOptions));
+theme.typography.h4 = {
+  fontSize: '1.2rem',
+  '@media (min-width:600px)': {
+    fontSize: '1.5rem',
+  },
+  [theme.breakpoints.up('md')]: {
+    fontSize: '2.0rem',
+  },
+};
+
 export default function App() {
   return (
     <html lang="en" className="h-full">
@@ -41,10 +65,12 @@ export default function App() {
         <Links />
       </head>
       <body className="h-full">
-        <Outlet />
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
+        <ThemeProvider theme={theme}>
+          <Outlet />
+          <ScrollRestoration />
+          <Scripts />
+          <LiveReload />
+        </ThemeProvider>
       </body>
     </html>
   );
