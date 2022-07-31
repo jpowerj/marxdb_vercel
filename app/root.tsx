@@ -11,7 +11,7 @@ import {
 import { ThemeProvider, createTheme, responsiveFontSizes } from '@mui/material/styles';
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
-import { getUser } from "./session.server";
+//import { getUser } from "./session.server";
 
 const robotoUrl = "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap";
 
@@ -28,11 +28,13 @@ export const meta: MetaFunction = () => ({
   viewport: "width=device-width,initial-scale=1",
 });
 
+/*
 export async function loader({ request }: LoaderArgs) {
   return json({
     user: await getUser(request),
   });
 }
+*/
 
 const themeOptions = {
   palette: {
