@@ -57,7 +57,7 @@ async function seed() {
     var regRecord = regRecords[regRecordKey];
     console.log(regRecord);
     // Get just the id and title
-    baseData = {
+    var baseData = {
       id: regRecordKey,
       title: regRecord.title,
     };
