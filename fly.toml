@@ -13,6 +13,9 @@ entrypoint = "sh"
 source = "data"
 destination = "/data"
 
+[env]
+PORT = 8080
+
 [[services]]
 internal_port = 8_080
 processes = [ "app" ]
